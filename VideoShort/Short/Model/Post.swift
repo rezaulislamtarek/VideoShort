@@ -20,7 +20,7 @@ struct Post: Identifiable, Codable {
 
 
 extension Post {
-   static var posts = [
+    static var posts : [Post] = [
         .init(
             id: NSUUID().uuidString,
             videoUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/223/media/ZLfFOqwobyNHwuuf_1747292695.mp4",
