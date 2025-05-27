@@ -11,7 +11,7 @@ import SwiftUI
 struct VideoShortApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ShortsView()
         }
     }
 }
