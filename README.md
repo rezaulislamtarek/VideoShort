@@ -2,20 +2,6 @@
 
 A modern iOS app built with SwiftUI that creates a TikTok/Instagram Reels-style short video feed experience with smooth scrolling and automatic video playback.
 
-## 📋 Quick Setup
-
-1. **Create README.md file** in your repository root:
-```bash
-touch README.md
-```
-
-2. **Copy and paste** this entire content into your `README.md` file
-
-3. **Customize** the following sections:
-   - Replace `yourusername` with your actual GitHub username
-   - Add your app screenshots in the Screenshots section
-   - Update the repository URL in Installation section
-   - Modify author information with your details
 
 ## 🚀 Features
 
@@ -29,27 +15,6 @@ touch README.md
 - **Clean Architecture**: Reusable components with MVVM pattern
 
 
-## 🛠 Technical Implementation
-
-### Key Components
-- **FeedView**: Legacy implementation for iOS 16 and below using TabView
-- **FeedViewModern**: Modern implementation for iOS 17+ using ScrollView
-- **VideoPlayerHelper**: Shared utility class for video player management
-- **FeedCell**: Reusable video cell component
-- **Post Model**: Data structure for video posts
-
-### iOS Version Handling
-```swift
-struct MainFeedView: View {
-    var body: some View {
-        if #available(iOS 17.0, *) {
-            FeedViewModern()
-        } else {
-            FeedView()
-        }
-    }
-}
-```
 
 ## 📋 Requirements
 
@@ -94,7 +59,7 @@ The app automatically detects the iOS version and uses the appropriate implement
 
 ## 🔄 Usage
 
-Replace the mock data in `FeedViewModel` with your actual video URLs:
+Replace the mock data in `ShortsViewModel` with your actual video URLs:
 
 ```swift
 self.posts = [
