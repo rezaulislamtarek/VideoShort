@@ -7,14 +7,19 @@
 
 import Foundation
  
+ 
 final class ShortViewModel : ObservableObject  {
     @Published var posts = [Post]()
     
-    init() {
+    
+    init( ) {
+         
         fetchPosts()
     }
     
     private func fetchPosts() {
         posts = Post.posts
     }
+    
+     
 }
