@@ -11,8 +11,10 @@ struct ShortsView: View {
     var body: some View {
         if #available(iOS 17.0, *){
             ShortViewiOS17Plus()
+                .background(.black)
         }else{
             ShortViewiOS16()
+                .background(.black)
         }
        
     }
