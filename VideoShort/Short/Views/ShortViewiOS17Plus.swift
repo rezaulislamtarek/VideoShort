@@ -116,13 +116,7 @@ struct ShortViewiOS17Plus: View {
     }
 }
 
-#Preview {
-    if #available(iOS 17.0, *) {
-        ShortViewiOS17Plus()
-    } else {
-        // Fallback on earlier versions
-    }
-}
+ 
 
 #Preview {
     if #available(iOS 17.0, *) {
