@@ -23,9 +23,20 @@ extension Post {
     static var posts : [Post] = [
         .init(
             id: NSUUID().uuidString,
-            videoUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/223/media/ZLfFOqwobyNHwuuf_1747292695.mp4",
-            thumbnailUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/223/media/ZLfFOqwobyNHwuuf_1747292695.jpg",
-            caption: "Amazing medical consultation tips! 🩺 #DocTime #Healthcare",
+            videoUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/174/media/jeFduKgWn4Vpv8ku_1746704514.mp4",
+            thumbnailUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/174/media/AtRgJRf8MErTS6gF_1746704515.jpeg",
+            caption: "Telemedicine revolution is here! 📱 Connect with doctors instantly",
+            username: "tech_doctor_jane",
+            userProfilePictureUrl: "https://rezaulislamtarek.github.io/portfolio/img/reza_hero.png",
+            likeCount: 3421,
+            commentCount: 234
+        ),
+        
+        .init(
+            id: NSUUID().uuidString,
+            videoUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/173/media/UafcT7BJdNEkL63g_1746615050.mp4",
+            thumbnailUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/173/media/s5z2eIHBO0SZzjGO_1746615050.jpeg",
+            caption: "মানসিক চাপ",
             username: "dr_ahmed_hassan",
             userProfilePictureUrl: "https://rezaulislamtarek.github.io/portfolio/img/reza_hero.png",
             likeCount: 1245,
@@ -33,9 +44,9 @@ extension Post {
         ),
         .init(
             id: NSUUID().uuidString,
-            videoUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/221/media/SMcTSyXRAuHTEpUY_1747291826.mp4",
-            thumbnailUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/221/media/SMcTSyXRAuHTEpUY_1747291826.jpg",
-            caption: "Quick health check routine everyone should follow 💪",
+            videoUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/76/media/ikzNrZ0q9HWZEAfX_1744517021.mp4",
+            thumbnailUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/76/media/3KAoiCQzvMzh6h8Z_1744517021.jpeg",
+            caption: "সুস্থ শিশু, সুখী আগামী",
             username: "healthylife_sara",
             userProfilePictureUrl: "https://rezaulislamtarek.github.io/portfolio/img/reza_hero.png",
             likeCount: 892,
@@ -51,16 +62,7 @@ extension Post {
             likeCount: 2156,
             commentCount: 123
         ),
-        .init(
-            id: NSUUID().uuidString,
-            videoUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/174/media/jeFduKgWn4Vpv8ku_1746704514.mp4",
-            thumbnailUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/174/media/AtRgJRf8MErTS6gF_1746704515.jpeg",
-            caption: "Telemedicine revolution is here! 📱 Connect with doctors instantly",
-            username: "tech_doctor_jane",
-            userProfilePictureUrl: "https://rezaulislamtarek.github.io/portfolio/img/reza_hero.png",
-            likeCount: 3421,
-            commentCount: 234
-        ),
+        
         .init(
             id: NSUUID().uuidString,
             videoUrl: "https://doctime-clips-dev.s3.ap-southeast-1.amazonaws.com/clips/223/media/ZLfFOqwobyNHwuuf_1747292695.mp4",
