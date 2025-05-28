@@ -15,6 +15,9 @@ struct ShortViewiOS16 : View {
     @State var currentIndex : Int = 0
     @State var currentId : String?
     
+    // Cache manager
+    private let cacheManager = VideoCacheManager.shared
+    
     var body : some View {
         GeometryReader{ proxy in
             let size = proxy.size
@@ -36,7 +39,7 @@ struct ShortViewiOS16 : View {
             .frame(width: width)
             .onChange(of: currentIndex) { newValue in
                 let id = viewModel.posts[newValue].id
-                playVideoOnChangeOfPosition(postId: id)
+                playVideoOnChangeOfPosition(postId: id, currentIndex: newValue)
             }
             .onAppear{
                 playInitialVideoIfNecessary()
@@ -46,23 +49,58 @@ struct ShortViewiOS16 : View {
     
     func playInitialVideoIfNecessary() {
         guard let post = viewModel.posts.first,
-              player.currentItem == nil  else { return }
+              player.currentItem == nil else { return }
+        
         currentId = post.id
-        let playerItem = AVPlayerItem(url: URL(string: post.videoUrl)!)
+        print("🎬 PLAYER: Playing initial video - \(getVideoFileName(from: post.videoUrl))")
+        
+        // Get video item from cache or create new one
+        let playerItem = cacheManager.getVideoItem(for: post.videoUrl)
         player.replaceCurrentItem(with: playerItem)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-            player.play()
-        }
+        player.play()
+        
+        // Cache next video if available
+        cacheNextVideoIfAvailable(currentIndex: 0)
     }
     
-    func playVideoOnChangeOfPosition(postId: String?) {
+    func playVideoOnChangeOfPosition(postId: String?, currentIndex: Int) {
         guard let currentPost = viewModel.posts.first(where: {$0.id == postId}) else { return }
-        //DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
-            currentId = currentPost.id
-        //}
+        
+        currentId = currentPost.id
         player.replaceCurrentItem(with: nil)
-        let playerItem = AVPlayerItem(url: URL(string: currentPost.videoUrl)!)
+        
+        print("🎬 PLAYER: Switching to video at index \(currentIndex) - \(getVideoFileName(from: currentPost.videoUrl))")
+        
+        // Get video item from cache or create new one
+        let playerItem = cacheManager.getVideoItem(for: currentPost.videoUrl)
         player.replaceCurrentItem(with: playerItem)
+        
+        // Cache next video if available
+        cacheNextVideoIfAvailable(currentIndex: currentIndex)
+    }
+    
+    // MARK: - Private Caching Methods
+    
+    private func cacheNextVideoIfAvailable(currentIndex: Int) {
+        let nextIndex = currentIndex + 1
+        
+        // Check if next video exists
+        guard nextIndex < viewModel.posts.count else {
+            print("📱 PLAYER: No next video to cache (reached end)")
+            return
+        }
+        
+        let nextVideoUrl = viewModel.posts[nextIndex].videoUrl
+        print("📱 PLAYER: Requesting cache for next video (index \(nextIndex)) - \(getVideoFileName(from: nextVideoUrl))")
+        
+        // Cache next video asynchronously
+        cacheManager.cacheNextVideo(url: nextVideoUrl)
+    }
+    
+    private func getVideoFileName(from url: String) -> String {
+        guard let url = URL(string: url) else { return "unknown" }
+        let fileName = url.lastPathComponent
+        return fileName.isEmpty ? url.absoluteString.suffix(20).description : String(fileName.prefix(20))
     }
 }
 #Preview {
