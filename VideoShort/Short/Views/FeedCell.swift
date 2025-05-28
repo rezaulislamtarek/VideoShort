@@ -113,7 +113,7 @@ extension FeedCell {
                     Text("\(post.likeCount)")
                         .font(.footnote)
                         .foregroundStyle(.white)
-                        .bold()
+                       
                 }
             }
             
@@ -129,7 +129,7 @@ extension FeedCell {
                     Text("\(post.commentCount)")
                         .font(.footnote)
                         .foregroundStyle(.white)
-                        .bold()
+                         
                 }
             }
             
@@ -145,7 +145,7 @@ extension FeedCell {
                     Text("\(Int(post.likeCount / 2))")
                         .font(.footnote)
                         .foregroundStyle(.white)
-                        .bold()
+                         
                 }
             }
             
@@ -162,7 +162,7 @@ extension FeedCell {
                     Text("\(Int(post.likeCount / 3))")
                         .font(.footnote)
                         .foregroundStyle(.white)
-                        .bold()
+                        
                 }
                 
             }
