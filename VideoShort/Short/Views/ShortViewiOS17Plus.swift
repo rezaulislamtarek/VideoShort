@@ -5,13 +5,6 @@
 //  Created by Rezaul Islam on 5/27/25.
 //
 
-//
-//  ShortView.swift
-//  VideoShort
-//
-//  Created by Rezaul Islam on 5/27/25.
-//
-
 import SwiftUI
 import AVKit
 
@@ -56,6 +49,19 @@ struct ShortViewiOS17Plus: View {
         // Add debugging gesture (long press to print cache status)
         .onLongPressGesture {
             print(cacheManager.getCacheStatus())
+            
+            // Also print preload status
+            let status = cacheManager.getPreloadStatus()
+            print("📋 PRELOAD STATUS:")
+            print("   Queue count: \(status.queueCount)")
+            print("   Currently downloading: \(status.currentlyDownloading ?? "None")")
+            print("   Queued URLs: \(status.queuedUrls.map { getVideoFileName(from: $0) })")
+        }
+        // Listen for download completions to show feedback
+        .onReceive(cacheManager.$isComplite) { completed in
+            if completed {
+                print("🎉 A video download completed! Starting next in queue...")
+            }
         }
     }
     
@@ -71,8 +77,8 @@ struct ShortViewiOS17Plus: View {
         player.replaceCurrentItem(with: playerItem)
         player.play()
         
-        // Cache next video if available
-        cacheNextVideoIfAvailable(currentIndex: 0)
+        // Start preloading from current position
+        startPreloadingFromCurrentPosition(currentIndex: 0)
     }
     
     func playVideoOnChangeOfPosition(postId: String?, currentIndex: Int) {
@@ -83,30 +89,52 @@ struct ShortViewiOS17Plus: View {
         
         print("🎬 PLAYER: Switching to video at index \(currentIndex) - \(getVideoFileName(from: currentPost.videoUrl))")
         
-        // Get video item from cache or create new one
+        // Check if this video was downloading or queued
+        let preloadStatus = cacheManager.getPreloadStatus()
+        let wasInQueue = preloadStatus.queuedUrls.contains(currentPost.videoUrl)
+        let wasDownloading = preloadStatus.currentlyDownloading == currentPost.videoUrl
+        
+        if wasInQueue || wasDownloading {
+            let status = wasDownloading ? "downloading" : "queued"
+            print("🎯 PRIORITY: Video was \(status), canceling for immediate playback")
+        }
+        
+        // Get video item from cache or create new one (this handles the cancellation internally)
         let playerItem = cacheManager.getVideoItem(for: currentPost.videoUrl)
         player.replaceCurrentItem(with: playerItem)
         
-        // Cache next video if available
-        cacheNextVideoIfAvailable(currentIndex: currentIndex)
+        // Update preload queue based on new position
+        startPreloadingFromCurrentPosition(currentIndex: currentIndex)
+        
+        // Show updated queue status
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            let newStatus = cacheManager.getPreloadStatus()
+            if newStatus.queueCount > 0 {
+                print("📋 QUEUE: Restarted with \(newStatus.queueCount) videos")
+            }
+        }
     }
     
-    // MARK: - Private Caching Methods
+    // MARK: - Private Preloading Methods
     
-    private func cacheNextVideoIfAvailable(currentIndex: Int) {
-        let nextIndex = currentIndex + 1
+    private func startPreloadingFromCurrentPosition(currentIndex: Int) {
+        // Get all video URLs from posts
+        let allVideoUrls = viewModel.posts.map { $0.videoUrl }
         
-        // Check if next video exists
-        guard nextIndex < viewModel.posts.count else {
-            print("📱 PLAYER: No next video to cache (reached end)")
-            return
+        // Start preloading from current position
+        cacheManager.cacheVideosFromCurrentPosition(
+            currentIndex: currentIndex,
+            videoUrls: allVideoUrls
+        )
+        
+        print("📱 PLAYER: Updated preload queue from index \(currentIndex)")
+        
+        // Log what we're planning to cache
+        let preloadStatus = cacheManager.getPreloadStatus()
+        if preloadStatus.queueCount > 0 {
+            let queuedFiles = preloadStatus.queuedUrls.prefix(3).map { getVideoFileName(from: $0) }
+            print("📋 PRELOAD: Next \(preloadStatus.queueCount) videos queued: \(queuedFiles.joined(separator: ", "))\(preloadStatus.queueCount > 3 ? "..." : "")")
         }
-        
-        let nextVideoUrl = viewModel.posts[nextIndex].videoUrl
-        print("📱 PLAYER: Requesting cache for next video (index \(nextIndex)) - \(getVideoFileName(from: nextVideoUrl))")
-        
-        // Cache next video asynchronously
-        cacheManager.cacheNextVideo(url: nextVideoUrl)
     }
     
     private func getVideoFileName(from url: String) -> String {
@@ -114,9 +142,28 @@ struct ShortViewiOS17Plus: View {
         let fileName = url.lastPathComponent
         return fileName.isEmpty ? url.absoluteString.suffix(20).description : String(fileName.prefix(20))
     }
+    
+    // MARK: - Debug Methods (Optional)
+    
+    private func showPreloadDebugInfo() {
+        let status = cacheManager.getPreloadStatus()
+        print("""
+        
+        🔍 DETAILED PRELOAD DEBUG:
+        ========================
+        📱 Current Index: \(currentIndex ?? -1)
+        📋 Queue Count: \(status.queueCount)
+        🔄 Currently Downloading: \(status.currentlyDownloading ?? "None")
+        📝 Preload Distance: \(CacheConfiguration.preloadDistance)
+        
+        📋 Queued Videos:
+        \(status.queuedUrls.enumerated().map { "   \($0.offset + 1). \(getVideoFileName(from: $0.element))" }.joined(separator: "\n"))
+        
+        ========================
+        
+        """)
+    }
 }
-
- 
 
 #Preview {
     if #available(iOS 17.0, *) {
